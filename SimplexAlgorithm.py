@@ -8,44 +8,44 @@ Created on Fri Dec 3 13:53:38 2021
 
 import numpy as np
 
-#Inicializamos una matrix vacía para poder empezar el código
+#We initialize an empty matrix to start the code.
 row=int(input("Número de restricciones "))
 columns=int(input("Número de variables "))
 mat = np.zeros((row, columns+row))
 
-#Llenar la matrix
+#Fill up the matrix.
 for r in range(0,row):
     for c in range(0,columns):
-        #En esta línea r y c sirven para guiarte en el renglón y columna en el que se encuentra el ciclo
-        mat[(r),(c)]=(input("Elemento a["+str(r)+","+str(c)+"] "))
+        #In this line r and c are used to guide the user in which value to insert.
+        mat[(r),(c)]=(input("Element a["+str(r)+","+str(c)+"] "))
 
 vectorb=np.zeros(row)
 for i in range(0, row):
-    vectorb[i]=float(input("Pon el valor de la capacidad de la restricción "+str(i+1)+": "))
-    
-#Ponemos las variables de holgura o de exceso y armamos el vector b
+    vectorb[i]=float(input("Insert the value of the capacity of the restriction "+str(i+1)+": "))
+
+#We insert the slack or excess variables and build up the b vector.
 for r in range(0, row):
-    hol=int(input("Pon '1' si tu restricción "+str(r+1)+" va a necesitar variable de holgura o '0' si necesita variable de exceso "))
+    hol=int(input("Press '1' if your "+str(r+1)+"° restriction will need a slack variable or '0' if it needs an excess variable "))
     if (hol==0):
         for c in range(0, columns):
             mat[(r), (c)]=(-1)*mat[(r), (c)]
             vectorb[r]=vectorb[r]*(-1)
-    #Estas líneas son las que arman la parte de la matrix con las variables de holgura o de exceso
+    #These lines of code build up the matrix including the excess and/or slack variables.
     for c in range(columns, columns+row):
         if (r+columns==c):
             mat[(r), (c)]=1
         else:
             mat[(r), (c)]=0
 
-#Vamos a armar el vector c
+#These lines build up the c vector.
 vectorc=np.zeros(columns+row)
 
 for i in range(0, columns+row):
     if (i<columns):
-        vectorc[i]=float(input("Pon el valor de los coeficientes de la función de maximización o minimización: "))
+        vectorc[i]=float(input("Insert the value of the coefficients of the optimization function: "))
 
-#Preguntamos si se quiere maximizar o minimizar el problema
-typ=int(input("Pon '1' si quieres maximizar o '0' si quieres minimizar."))
+#The user is asked whether it wants to minimize or maximize the problem.
+typ=int(input("Press '1' if you want to maximize or press '0' if you want to minimize. "))
 
 
 print(vectorb)
@@ -54,10 +54,9 @@ print(mat)
 print(typ)
 
 
-#Tomamos como primera base a las variables de holgura o de exceso. Inicializamos la matrix B.
+#We use the variables of slack or excess as the first base, we initialize the B matrix.
 matB=np.zeros((row, row))
 
-#Armamos la matrix B con los números de la matrix con las variables de holgura.
 for r in range(0, row):
     for c in range(0, row):
         if (r==c):
