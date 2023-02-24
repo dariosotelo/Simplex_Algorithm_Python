@@ -62,37 +62,34 @@ for r in range(0, row):
         if (r==c):
             matB[(r), (c)]=mat[(r), (columns+c)]
 
-#Estas líneas solo están aquí para inicializar las variables de los índices, aquí son irrelevantes, pero se usan después.
+#These lines initialize the index variables, they are not used here, but they become relevant afterwards
 entryIndex=row+columns-1
 exitIndex=0
 
-#Inicializamos el vector CB.
+#This is to initialize the Cb vector
 vectorcb=np.zeros(row)
 
-#hacemos la operación del primer cuadrado
-#aux1=np.matmul(np.matmul(vectorcb, matBinv), mat)-vectorc
-
-#Inicializamos una matrix que pueda contener los cuatro cuadros
+#A matrix that can hold four squares is initialized
 matsimp=np.zeros((row+1, row+columns+1))
 
-#Empezamos el algoritmo Simplex, tenemos que ver si hay números negativos en el primer cuadrado.
+#The Simplex Algorithm is started, it has to look out for negative numbers in the first square.
 var1=False
 
-#Mientras haya números negativos en el primer cuadrado del algoritmo, este while se va a repetir.
+#As long as there are negative numbers in the first square of the algorithm, this code is going to loop.
 if (typ==1):
-    print("Maximización")
+    print("Maximization")
     while (var1==False):
-        #Sacamos la matrix inversa de B
+        #The inverse matrix of B
         matBinv=np.linalg.inv(matB)
-        #Armamos o cambiamos el vector cb
+        #The cb vector is created or modified.
         vectorcb[exitIndex]=vectorc[entryIndex]
-        #Armamos el cuadrado de la esquina superior izquierda
+        #This operation is to get the first square of the top left corner
         aux1=np.matmul(np.matmul(vectorcb, matBinv), mat)-vectorc
-        #Ponemos el vector aux1 en la matrix matsimp
+        #The aux1 vector is inserted to the matsimp matrix
         for i in range(0, row+columns):
             matsimp[(0), (i)]=aux1[i]
             print(aux1[i])
-        #Vamos a ver si se tiene que seguir en el ciclo.
+        #These lines of code check if the loop is continued.
         for i in range(0, len(aux1)):
             if (np.min(aux1)<0):
                 var1=False
@@ -101,53 +98,53 @@ if (typ==1):
                 break
         for i in range(0, row+columns):
             matsimp[(0), (i)]=aux1[i]
-            #Armamos el cuadrado de la esquina inferior izquierda y lo metemos a la matrix del método Simplex.
+            #The bottom lef square is created and inserted into the simplex method matrix.
             aux2=np.matmul(matBinv, mat)
         for i in range(1, row+1):
             for j in range(0, row+columns):
                 matsimp[(i), (j)]=aux2[(i-1), (j)]
-        #Armamos el cuadrado de la esquina superior derecha y lo metemos a la matrix del método Simplex.
+        #The top right square is created and inserted into the simplex method matrix.
         aux3=np.matmul(np.matmul(vectorcb, matBinv), vectorb)
         matsimp[(0), row+columns]=aux3
-        #Armamos el cuadrado de la esquina inferior derecha y lo metemos a la matrix del método Simplex.
+        #The bottom right square is created and inserted into the simplex method matrix.
         aux4=np.matmul(matBinv, vectorb)
         for j in range(1, row+1):
             matsimp[(j), (row+columns)]=aux4[j-1]
-        #Sacamos el valor mínimo de la fila de las variables básicas
+        #The minimum value of the row of basic variables is selected.
         varmin=10
         for i in range(0, len(aux1)):
             if (matsimp[(0), (i)]<varmin):
                 print(i)
                 varmin=matsimp[(0),(i)]
                 entryIndex=i
-        #Declaramos un vector auxiliar para hacer la división entre coeficientes de las variables que van a entrar y salir
+        #There is an auxiliar vector created to make the division between coefficients of the variables who are going to enter and exit.
         auxVecEntEx=np.zeros(row)
         for i in range(1, row+1):
             auxVecEntEx[i-1]=matsimp[(i),(row+columns)]/matsimp[(i), (entryIndex)]
-        #Tomamos el valor mínimo del vector resultante.
+        #The minimum value of the resultant vector is chosen.
         minVal=np.min(auxVecEntEx) 
         exitIndex=20
-        #Tomamos el índice del valor mínimo para ver cuál variable va a ser la que va a salir.
+        #The index of the minimum value is chosen to exit.
         for i in range(1, row+1):
             if (auxVecEntEx[i-1]==minVal):
                 exitIndex=i-1
-        #modificamos la matrix B
+        #the B matrix is modified
         for i in range(0, row):
             matB[(i), (exitIndex)]=mat[(i), (entryIndex)]
         print(matsimp)
 elif(typ==0):
-    print("Minimización")
+    print("Minimization")
     while (var1==False):
-        #Sacamos la matrix inversa de B
+        #The inverse of the B matrix
         matBinv=np.linalg.inv(matB)
-        #Armamos o cambiamos el vector cb
+        #The cb vector is created of modified.
         vectorcb[exitIndex]=vectorc[entryIndex]
-        #Armamos el cuadrado de la esquina superior izquierda
+        #The top left corner square is created.
         aux1=np.matmul(np.matmul(vectorcb, matBinv), mat)-vectorc
-        #Ponemos el vector aux1 en la matrix matsimp
+        #The aux1 vector is inserted into the matsimp matrix.
         for i in range(0, row+columns):
             matsimp[(0), (i)]=aux1[i]
-        #Vamos a ver si se tiene que seguir en el ciclo.
+        #These lines check if the loop is necessary to continue.
         for i in range(0, len(aux1)):
             if (np.min(aux1)<0):
                 var1=False
@@ -156,34 +153,30 @@ elif(typ==0):
                 break
         for i in range(0, row+columns):
             matsimp[(0), (i)]=aux1[i]
-            #Armamos el cuadrado de la esquina inferior izquierda y lo metemos a la matrix del método Simplex.
+            #the bottom left corner square is created and inserted into the simplex matrix.
             aux2=np.matmul(matBinv, mat)
         for i in range(1, row+1):
             for j in range(0, row+columns):
                 matsimp[(i), (j)]=aux2[(i-1), (j)]
-        #Armamos el cuadrado de la esquina superior derecha y lo metemos a la matrix del método Simplex.
+        #the top right corner square is created and inserted into the simplex matrix.
         aux3=np.matmul(np.matmul(vectorcb, matBinv), vectorb)
         matsimp[(0), row+columns]=aux3
-        #Armamos el cuadrado de la esquina inferior derecha y lo metemos a la matrix del método Simplex.
+        #the bottom right square is created and inserted into the simplex matrix.
         aux4=np.matmul(matBinv, vectorb)
         for j in range(1, row+1):
             matsimp[(j), (row+columns)]=aux4[j-1]
-        #Sacamos el valor mínimo de la columna de las variables de solución.
+        #the minimum value of the columns.
         varmin=10
         for i in range(1, row+1):
             if (matsimp[(i), (columns+row)]<varmin):
                 varmin=matsimp[(i),(columns+row)]
                 entryIndex=i-1
-        #Declaramos un vector lleno de números grandes para poder sacar las divisiones.
+        #this is a vector filled with big numbers so we can get the divisions
         auxVecEntEx=np.zeros(row+columns)
-        """
-        for i in range(0, len(auxVecEntEx)):
-            auxVecEntEx[i]=auxVecEntEx[i]*400
-        """
         for i in range(0, row):
             if (matsimp[(entryIndex+1),(i)]<0):
                 auxVecEntEx[i]=np.abs(vectorc[i]/matsimp[(entryIndex+1),(i)])
-        #Checamos cuál es el valor mínimo.
+        #the minimum value is selected.
         minVal=10000
         for i in range(0, row+columns):
             if (auxVecEntEx[i]!=0):
@@ -191,19 +184,17 @@ elif(typ==0):
                     minVal=auxVecEntEx[i]
                     exitIndex=i
                     print("Linea198")
-        #minVal=np.min(auxVecEntEx)
-        #exitIndex=40000
-        #Vemos cuál variable va a ser la que va a salir.
+        #this code is to check which variable will exit.
         for i in range(0, row+columns):
             if (auxVecEntEx[i]==minVal):
                 exitIndex=i
-        print("Indice salida", exitIndex)
-        print("Indice entrada", entryIndex)
-        #modificamos la matrix B
+        print("Exit index ", exitIndex)
+        print("Entry index ", entryIndex)
+        #the B matrix is modified.
         for i in range(0, row):
             matB[(i), (exitIndex)]=mat[(i), (entryIndex)]
         print(matsimp)
-        #Vamos a checar si tenemos que volver a entrar al while o ya nos salimos
+        #This code checks if it is necessary to repeat the loop.
         boolaux=False
         for i in range(0, row+columns):
             if (matsimp[(exitIndex),(i)]<0):
@@ -211,8 +202,8 @@ elif(typ==0):
         if (boolaux==False):
             var1=True
 else:
-    print("Esa opción no existe")
+    print("That option does not exist. ")
   
-print("La solución del problema es: "+str(matsimp[(0), (row+columns)]))
-print("La matrix de la solución del problema está dada por: ")
+print("The solution of the problem is: "+str(matsimp[(0), (row+columns)]))
+print("The matrix of the solution of the problem is: ")
 print(matsimp)
